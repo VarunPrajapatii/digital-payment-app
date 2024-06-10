@@ -24,24 +24,24 @@ router.post("/signup", async (req, res) => {
         })
     }
 
-    const user = User.findOne({
+    const user = await User.findOne({
         email: body.email,
     })
 
-    if(!user._id) {
-        res.status(411).json({
+    if(user) {
+        return res.status(411).json({
             message: "Email already taken / Incorrect inputs"
         })
     }
 
     const dbUser = await User.create({
         email: body.email,
-        passaaword: body.passaaword,
+        password: body.password,
         firstName: body.firstName,
         lastName: body.lastName,
     });
 
-    const userId = user._id;
+    const userId = dbUser._id;
 
     await Account.create({
         userId,
@@ -50,7 +50,7 @@ router.post("/signup", async (req, res) => {
 
 
     const token = jwt.sign({
-        userId: dbUser._id
+        userId: userId
     }, JWT_SECRET)
     res.json({
         message: "User created successfully",
@@ -65,7 +65,7 @@ const signinBody = zod.object({
 })
 
 router.post("/signin", async (req, res) => {
-    const {success} = signinBody.safeParse();
+    const {success} = signinBody.safeParse(req.body);
     if(!success) {
         res.status(411).json({
             message: "Incorrect Inputs",
@@ -110,14 +110,13 @@ router.put("/", authMiddleware, async (req, res) => {
         })
     }
 
-    await User.updateOne({
+    await User.updateOne(req.body, {
         _id: req.userId
     })
 
     res.json({
         message: "Updated successfully"
     })
-
 })
 
 
