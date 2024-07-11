@@ -24,3 +24,12 @@
     - Route to balance
     - Route to transfer
 - Used session from mongoose in account transfer route
+- Backend part done
+
+
+#Fronted Work
+
+- Create components and pages (Signin, Signup, Dashboard)
+- Added tailwindcss classes and done with all pages ui part
+- Installed axios
+- Made signup and signin page functional with backend calls
